@@ -256,7 +256,6 @@
 
         // ── Asset base URLs ────────────────────────────────────────
         // Images from SwetherEnglish; missing sounds fall back to swether
-        const BASE_EN   = `https://raw.githubusercontent.com/alice55505-source/SwetherEnglish/main/`;
         const BASE_ZH   = `https://raw.githubusercontent.com/alice55505-source/swether/main/`;
 
         function soundUrl(name) {
@@ -264,14 +263,14 @@
         }
 
         const BG_MAP = {
-            home:    `${BASE_EN}images/cover.jpg`,
-            intro:   `${BASE_EN}images/intro.jpg`,
-            K1:      `${BASE_EN}images/K1.jpg`,
-            K2:      `${BASE_EN}images/K2.jpg`,
-            K3:      `${BASE_EN}images/K3.jpg`,
-            result1: `${BASE_EN}images/result1.jpg`,
-            result2: `${BASE_EN}images/result2.jpg`,
-            result3: `${BASE_EN}images/result3.jpg`,
+            home:    `images/cover.jpg`,
+            intro:   `images/intro.jpg`,
+            K1:      `images/K1.jpg`,
+            K2:      `images/K2.jpg`,
+            K3:      `images/K3.jpg`,
+            result1: `images/result1.jpg`,
+            result2: `images/result2.jpg`,
+            result3: `images/result3.jpg`,
         };
 
         // ── Sound permission system ────────────────────────────────
@@ -615,10 +614,10 @@
 
         // Dynamic backgrounds
         const GAME_BG = [
-            `${BASE_EN}images/bg0.jpg`,
-            `${BASE_EN}images/bg1.jpg`,
-            `${BASE_EN}images/bg2.jpg`,
-            `${BASE_EN}images/bg3.jpg`
+            `images/bg0.jpg`,
+            `images/bg1.jpg`,
+            `images/bg2.jpg`,
+            `images/bg3.jpg`
         ];
         let bgResetTimer = null;
         function setGameBg(idx) {
