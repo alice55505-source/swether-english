@@ -880,7 +880,7 @@
                         const nextThreshold = (lastCheerGoThreshold + 1) * 200;
                         if (scores[currentLevel] >= nextThreshold) {
                             lastCheerGoThreshold++;
-                            setTimeout(() => playSfx('cheer_go'), 300);
+                            setTimeout(() => playSfx('cheer_go', 2.0), 300);
                             setTimeout(() => burstRibbon(), 100);
                         }
                     }
