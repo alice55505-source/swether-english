@@ -309,7 +309,7 @@
                 bgmAudio.play().then(() => {
                     bgmAudio.pause();
                     bgmAudio.currentTime = 0;
-                    bgmAudio.volume = 0.4;
+                    bgmAudio.volume = 0.2;
                     startBgm();
                 }).catch(() => { startBgm(); });
             } catch(e) { startBgm(); }
@@ -397,10 +397,10 @@
             if (!bgmAudio) {
                 bgmAudio = new Audio(soundUrl('bgm'));
                 bgmAudio.loop = true;
-                bgmAudio.volume = 0.4;
+                bgmAudio.volume = 0.2;
             }
             if (actx && actx.state === 'suspended') { actx.resume().catch(() => {}); }
-            bgmAudio.volume = 0.4;
+            bgmAudio.volume = 0.2;
             bgmAudio.play().then(() => {
                 bgmPlaying = true;
                 bgmRetryCount = 0;
