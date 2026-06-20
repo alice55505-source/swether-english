@@ -748,6 +748,10 @@
                         b.x -= dir * push;
                         a.vx = Math.max(-2, Math.min(2, a.vx + dir * 0.15));
                         b.vx = Math.max(-2, Math.min(2, b.vx - dir * 0.15));
+                        // Clamp to screen after push
+                        const wall = 60;
+                        a.x = Math.max(wall, Math.min(canvas.width - wall, a.x));
+                        b.x = Math.max(wall, Math.min(canvas.width - wall, b.x));
                     }
                 }
             }
@@ -759,7 +763,8 @@
                 it.vy += (it.gravity ?? 0.22);
 
                 const FSIZE = 60;
-                if (it.x < FSIZE || it.x > canvas.width - FSIZE) { it.vx *= -1; }
+                if (it.x < FSIZE) { it.x = FSIZE; it.vx = Math.abs(it.vx); }
+                else if (it.x > canvas.width - FSIZE) { it.x = canvas.width - FSIZE; it.vx = -Math.abs(it.vx); }
 
                 ctx.textAlign = "center";
 
