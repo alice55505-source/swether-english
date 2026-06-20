@@ -69,7 +69,7 @@
 
         #home {
             background-size: contain;
-            background-color: #fdfae7;
+            background-color: #fdf5e4;
             background-repeat: no-repeat;
         }
         #home      .btn { top: 85%; height: 9%; }
@@ -468,6 +468,21 @@
             canvas.height = window.innerHeight;
             const home = document.getElementById('home');
             home.style.backgroundImage = `url('${BG_MAP.home}')`;
+
+            const tmpImg = new Image();
+            tmpImg.onload = function() {
+                try {
+                    const tc = document.createElement('canvas');
+                    tc.width = 4; tc.height = 4;
+                    const tx = tc.getContext('2d');
+                    tx.drawImage(tmpImg, 0, 0, 4, 4);
+                    const d = tx.getImageData(0, 0, 1, 1).data;
+                    const hex = '#' + [d[0],d[1],d[2]].map(v => v.toString(16).padStart(2,'0')).join('');
+                    home.style.backgroundColor = hex;
+                    document.getElementById('gameArea').style.background = hex;
+                } catch(e) {}
+            };
+            tmpImg.src = BG_MAP.home;
         }
         window.addEventListener('load', initGame);
 
