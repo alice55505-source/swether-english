@@ -731,6 +731,27 @@
             }
 
             // Items
+            // Pre-pass: push overlapping items apart before drawing
+            const SEP = 130;
+            for (let i = 0; i < gameItems.length - 1; i++) {
+                const a = gameItems[i];
+                if (a.sliced) continue;
+                for (let j = i + 1; j < gameItems.length; j++) {
+                    const b = gameItems[j];
+                    if (b.sliced) continue;
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    if (Math.abs(dx) < SEP && Math.abs(dy) < SEP) {
+                        const push = (SEP - Math.abs(dx)) / 2 + 1;
+                        const dir = dx >= 0 ? 1 : -1;
+                        a.x += dir * push;
+                        b.x -= dir * push;
+                        a.vx = Math.max(-2, Math.min(2, a.vx + dir * 0.15));
+                        b.vx = Math.max(-2, Math.min(2, b.vx - dir * 0.15));
+                    }
+                }
+            }
+
             for (let i = gameItems.length - 1; i >= 0; i--) {
                 const it = gameItems[i];
                 it.y += it.vy;
