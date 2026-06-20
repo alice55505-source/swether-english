@@ -670,14 +670,25 @@
             const isBad = BAD_FOODS.includes(emoji);
 
             const FOOD_SIZE = 120;
+            const MIN_GAP = FOOD_SIZE + 20;
             const SLOTS = 4;
             const slotW = canvas.width / SLOTS;
-            const slotX = (spawnSlotIndex % SLOTS) * slotW;
             const margin = FOOD_SIZE / 2 + 10;
+
+            // Pick a slot not overlapping with items still near the top
+            let chosenSlot = spawnSlotIndex % SLOTS;
+            for (let attempt = 0; attempt < SLOTS; attempt++) {
+                const trySlot = (spawnSlotIndex + attempt) % SLOTS;
+                const tryMidX = trySlot * slotW + slotW / 2;
+                const blocked = gameItems.some(it => !it.sliced && it.y < FOOD_SIZE * 3 && Math.abs(it.x - tryMidX) < MIN_GAP);
+                if (!blocked) { chosenSlot = trySlot; break; }
+            }
+            spawnSlotIndex = (chosenSlot + 1) % SLOTS;
+
+            const slotX = chosenSlot * slotW;
             const xMin = Math.max(margin, slotX + margin);
             const xMax = Math.min(canvas.width - margin, slotX + slotW - margin);
             const x = xMin + Math.random() * Math.max(0, xMax - xMin);
-            spawnSlotIndex = (spawnSlotIndex + 1) % SLOTS;
 
             const fallSpeed = fallBase + Math.random() * fallRange;
             const vx = (Math.random() - 0.5) * driftRange;
