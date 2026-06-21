@@ -659,6 +659,11 @@
 
         function spawnFood() {
             const isExpert = difficulty === 'expert';
+
+            // Cap active items on screen to prevent crowding
+            const maxItems = isExpert ? 5 : 4;
+            if (gameItems.filter(it => !it.sliced).length >= maxItems) return;
+
             const wrongChance = isExpert ? 0.55 : 0.40;
             const fallBase   = isExpert ? 1.0  : 0.6;
             const fallRange  = isExpert ? 0.6  : 0.4;
@@ -733,8 +738,9 @@
             }
 
             // Items
-            // Pre-pass: push overlapping items apart before drawing
+            // Pre-pass: push overlapping items apart before drawing (3 iterations)
             const SEP = 130;
+            for (let iter = 0; iter < 3; iter++) {
             for (let i = 0; i < gameItems.length - 1; i++) {
                 const a = gameItems[i];
                 if (a.sliced) continue;
@@ -757,6 +763,7 @@
                     }
                 }
             }
+            } // end iter
 
             for (let i = gameItems.length - 1; i >= 0; i--) {
                 const it = gameItems[i];
