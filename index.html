@@ -763,8 +763,10 @@
             const wall = 60;
             for (let i = 0; i < gameItems.length; i++) {
                 if (pushX[i] !== 0 && !gameItems[i].sliced) {
-                    gameItems[i].x = Math.max(wall, Math.min(canvas.width - wall, gameItems[i].x + pushX[i]));
-                    gameItems[i].vx = Math.max(-2, Math.min(2, gameItems[i].vx + Math.sign(pushX[i]) * 0.1));
+                    // Cap total push per frame to prevent large jumps / flicker
+                    const p = Math.max(-50, Math.min(50, pushX[i]));
+                    gameItems[i].x = Math.max(wall, Math.min(canvas.width - wall, gameItems[i].x + p));
+                    gameItems[i].vx = Math.max(-2, Math.min(2, gameItems[i].vx + Math.sign(p) * 0.1));
                 }
             }
 
