@@ -738,7 +738,7 @@
             }
 
             // Items
-            // Pre-pass: push overlapping items apart before drawing (3 iterations)
+            // Pre-pass: gently push overlapping items apart (3 soft iterations)
             const SEP = 130;
             for (let iter = 0; iter < 3; iter++) {
             for (let i = 0; i < gameItems.length - 1; i++) {
@@ -752,13 +752,12 @@
                     if (Math.abs(dx) < SEP && Math.abs(dy) < SEP) {
                         const dir = dx >= 0 ? 1 : -1;
                         const wall = 60;
-                        // Only push the newer item; older item keeps its path
-                        // Must move the full gap to ensure separation >= SEP in one frame
-                        const push = SEP - Math.abs(dx) + 2;
+                        // Cap push per iteration to avoid large jumps (flicker)
+                        const push = Math.min(SEP - Math.abs(dx) + 2, 20);
                         const newer = (a.spawnOrder ?? 0) > (b.spawnOrder ?? 0) ? a : b;
                         const ndir = newer === a ? dir : -dir;
                         newer.x += ndir * push;
-                        newer.vx = Math.max(-2, Math.min(2, newer.vx + ndir * 0.15));
+                        newer.vx = Math.max(-2, Math.min(2, newer.vx + ndir * 0.1));
                         newer.x = Math.max(wall, Math.min(canvas.width - wall, newer.x));
                     }
                 }
