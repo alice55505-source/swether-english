@@ -680,10 +680,11 @@
             const slotW = canvas.width / SLOTS;
             const margin = FOOD_SIZE / 2 + 10;
 
-            // Pick a slot with no nearby item (including label area); skip if none found
+            // Pick a random starting slot, find first unblocked one
             let chosenSlot = -1;
+            const startSlot = Math.floor(Math.random() * SLOTS);
             for (let attempt = 0; attempt < SLOTS; attempt++) {
-                const trySlot = (spawnSlotIndex + attempt) % SLOTS;
+                const trySlot = (startSlot + attempt) % SLOTS;
                 const tryMidX = trySlot * slotW + slotW / 2;
                 const blocked = gameItems.some(it =>
                     !it.sliced &&
@@ -692,7 +693,7 @@
                 );
                 if (!blocked) { chosenSlot = trySlot; break; }
             }
-            if (chosenSlot === -1) return;   // all slots occupied, skip this spawn
+            if (chosenSlot === -1) return;
             spawnSlotIndex = (chosenSlot + 1) % SLOTS;
 
             const slotX = chosenSlot * slotW;
