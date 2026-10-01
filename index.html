@@ -705,7 +705,7 @@
             if (x === null) return;
             if (isWrong) wrongSpawnCount++; else correctSpawnCount++;
 
-            const fallSpeed = isExpert ? 2.2 : 1.9;
+            const fallSpeed = isExpert ? 2.2 : 1.5;
             const rawDrift = (0.3 + Math.random() * 0.7) * driftRange;
             const nearItem = gameItems.find(it => !it.sliced && it.y < ITEM_H * 2 && Math.abs(it.x - x) < 250);
             const vx = nearItem !== undefined
