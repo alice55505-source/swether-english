@@ -446,7 +446,7 @@
         // Level tuning (per difficulty)
         const LEVEL_DURATION = 45000;                        // ms per level
         const TARGET_CORRECT = { novice: 18, expert: 20 };   // target correct foods per level (x50 = 900 / 1000 pts)
-        const TARGET_WRONG   = { novice: 14, expert: 20 };   // target wrong foods per level
+        const TARGET_WRONG   = { novice: 8, expert: 10 };    // max wrong foods per level
         let wrongSpawnCount = 0;
 
         const canvas = document.getElementById('gameCanvas');
@@ -680,9 +680,9 @@
             const tC = TARGET_CORRECT[difficulty], tW = TARGET_WRONG[difficulty];
             const correctBehind = tC * progress - correctSpawnCount;
             const wrongBehind   = tW * progress - wrongSpawnCount;
-            const isWrong = correctBehind === wrongBehind
+            const isWrong = wrongSpawnCount < tW && (correctBehind === wrongBehind
                 ? Math.random() < tW / (tC + tW)
-                : wrongBehind > correctBehind;
+                : wrongBehind > correctBehind);
             const pool = isWrong ? WRONG_POOL[currentLevel] : LEVEL_CORRECT[currentLevel];
             const emoji = pool[Math.floor(Math.random() * pool.length)];
             const isBad = BAD_FOODS.includes(emoji);
