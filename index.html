@@ -445,7 +445,9 @@
 
         // Level tuning (per difficulty)
         const LEVEL_DURATION = 45000;                        // ms per level
-        const TARGET_CORRECT = { novice: 20, expert: 22 };   // guaranteed correct foods per level (x50 = 1000 / 1100 pts)
+        const TARGET_CORRECT = { novice: 18, expert: 20 };   // target correct foods per level (x50 = 900 / 1000 pts)
+        const TARGET_WRONG   = { novice: 14, expert: 20 };   // target wrong foods per level
+        let wrongSpawnCount = 0;
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -559,6 +561,7 @@
             currentLevel = level;
             scores[currentLevel] = 0;
             correctSpawnCount = 0;
+            wrongSpawnCount = 0;
             lastCheerGoThreshold = 0;
             levelStartTime = performance.now();
 
@@ -590,7 +593,7 @@
                 requestAnimationFrame(updateLoop);
             }
 
-            const spawnInterval = difficulty === 'expert' ? 750 : 850;
+            const spawnInterval = difficulty === 'expert' ? 650 : 750;
             spawnTimerId = setInterval(() => {
                 if (isGaming) spawnFood();
             }, spawnInterval);
@@ -667,16 +670,19 @@
             const isExpert = difficulty === 'expert';
 
             // Cap active items on screen to prevent crowding
-            const maxItems = isExpert ? 9 : 8;
+            const maxItems = isExpert ? 12 : 10;
             if (gameItems.filter(it => !it.sliced).length >= maxItems) return;
 
-            const wrongChance = isExpert ? 0.45 : 0.30;
             const driftRange = isExpert ? 1.2 : 0.8;
 
-            // Force a correct food if behind the per-level quota (quota due by 85% of level time)
+            // Pick whichever type (correct / wrong) is further behind its per-level target (targets due by 85% of level time)
             const progress = Math.min(1, (performance.now() - levelStartTime) / (LEVEL_DURATION * 0.85));
-            const behindQuota = correctSpawnCount < TARGET_CORRECT[difficulty] * progress;
-            const isWrong = !behindQuota && Math.random() < wrongChance;
+            const tC = TARGET_CORRECT[difficulty], tW = TARGET_WRONG[difficulty];
+            const correctBehind = tC * progress - correctSpawnCount;
+            const wrongBehind   = tW * progress - wrongSpawnCount;
+            const isWrong = correctBehind === wrongBehind
+                ? Math.random() < tW / (tC + tW)
+                : wrongBehind > correctBehind;
             const pool = isWrong ? WRONG_POOL[currentLevel] : LEVEL_CORRECT[currentLevel];
             const emoji = pool[Math.floor(Math.random() * pool.length)];
             const isBad = BAD_FOODS.includes(emoji);
@@ -691,15 +697,15 @@
                 const tryX = margin + Math.random() * (canvas.width - 2 * margin);
                 const blocked = gameItems.some(it =>
                     !it.sliced &&
-                    it.y < ITEM_H * 2 &&
+                    it.y < ITEM_H * 1.25 &&
                     Math.abs(it.x - tryX) < MIN_GAP
                 );
                 if (!blocked) { x = tryX; break; }
             }
             if (x === null) return;
-            if (!isWrong) correctSpawnCount++;
+            if (isWrong) wrongSpawnCount++; else correctSpawnCount++;
 
-            const fallSpeed = isExpert ? 1.6 : 1.4;
+            const fallSpeed = isExpert ? 2.2 : 1.9;
             const rawDrift = (0.3 + Math.random() * 0.7) * driftRange;
             const nearItem = gameItems.find(it => !it.sliced && it.y < ITEM_H * 2 && Math.abs(it.x - x) < 250);
             const vx = nearItem !== undefined
